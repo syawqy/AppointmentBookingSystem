@@ -12,20 +12,18 @@ namespace AppointmentBookingSystem.Data.Entities
         /// <summary>
         /// The unique identifier for the appointment
         /// </summary>
-        [Required]
+        [Key]
         public int Id { get; set; }
-
         /// <summary>
-        /// The ID of the customer who booked the appointment
+        /// The customer name
         /// </summary>
         [Required]
-        public int CustomerId { get; set; }
-
+        public string Name { get; set; }
         /// <summary>
-        /// The customer who booked the appointment
+        /// The customer email
         /// </summary>
-        public Customer Customer { get; set; }
-
+        [Required]
+        public string Email { get; set; }
         /// <summary>
         /// The date and time of the appointment
         /// </summary>

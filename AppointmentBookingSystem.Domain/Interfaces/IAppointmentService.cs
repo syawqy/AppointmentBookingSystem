@@ -10,6 +10,6 @@ namespace AppointmentBookingSystem.Domain.Interfaces
     public interface IAppointmentService
     {
         public Task<IEnumerable<Appointment>> GetAppointmentsForDate(DateTime date);
-        public Task<Appointment> BookAppointment(int customerId, DateTime date);
+        public Task<Appointment> BookAppointment(string name, string email, DateTime date);
     }
 }

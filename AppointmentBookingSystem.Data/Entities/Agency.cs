@@ -12,7 +12,7 @@ namespace AppointmentBookingSystem.Data.Entities
         /// <summary>
         /// The unique identifier for the agency
         /// </summary>
-        [Required]
+        [Key]
         public int Id { get; set; }
         /// <summary>
         /// The agency name

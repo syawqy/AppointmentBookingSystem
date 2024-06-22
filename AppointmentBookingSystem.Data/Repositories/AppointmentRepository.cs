@@ -22,7 +22,6 @@ namespace AppointmentBookingSystem.Data.Repositories
         public async Task<IEnumerable<Appointment>> GetAppointmentsForDate(DateTime date)
         {
             return await _context.Appointments
-                .Include(a => a.Customer)
                 .Where(a => a.Date.Date == date.Date)
                 .OrderBy(a => a.Id)
                 .ToListAsync();
@@ -38,7 +37,6 @@ namespace AppointmentBookingSystem.Data.Repositories
         public async Task<Appointment> GetAppointmentById(int id)
         {
             return await _context.Appointments
-                .Include(a => a.Customer)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 

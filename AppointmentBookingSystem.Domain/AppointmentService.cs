@@ -23,17 +23,12 @@ namespace AppointmentBookingSystem.Domain
             _customerRepository = customerRepository;
             _agencyRepository = agencyRepository;
         }
-        public async Task<Appointment> BookAppointment(int customerId, DateTime date)
-        {
-            var customer = await _customerRepository.GetCustomerById(customerId);
-            if (customer == null)
-            {
-                throw new Exception("Invalid customer ID.");
-            }
 
+        public async Task<Appointment> BookAppointment(string name, string email, DateTime date)
+        {
             var agency = await _agencyRepository.GetAgencyById(1); //for example
 
-            if(IsOffDay(agency, date))
+            if (IsOffDay(agency, date))
             {
                 throw new Exception("Agency is closed on the selected date.");
             }
@@ -45,8 +40,8 @@ namespace AppointmentBookingSystem.Domain
 
             var appointment = new Appointment
             {
-                CustomerId = customerId,
-                Customer = customer,
+                Name = name,
+                Email = email,
                 Date = date,
             };
 

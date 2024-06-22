@@ -1,5 +1,6 @@
 ﻿using AppointmentBookingSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,11 @@ namespace AppointmentBookingSystem.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Agency>()
+                .Property(e => e.OffDays)
+                .HasConversion(
+                    v => JsonConvert.SerializeObject(v),
+                    v => JsonConvert.DeserializeObject<List<DateTime>>(v));
             base.OnModelCreating(modelBuilder);
         }
     }

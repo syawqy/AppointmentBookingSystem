@@ -33,8 +33,8 @@ namespace AppointmentBookingSystem.Test
             var date = new DateTime(2023, 6, 20);
             var appointments = new List<Appointment>
             {
-                new Appointment { Id = 1, CustomerId = 1, Date = date},
-                new Appointment { Id = 2, CustomerId = 2, Date = date}
+                new Appointment { Id = 1, Name = "john", Email = "john@gmail.com", Date = date},
+                new Appointment { Id = 2, Name = "Nash", Email = "nash@gmail.com", Date = date},
             };
             _mockAppointmentRepository.Setup(r => r.GetAppointmentsForDate(date))
                 .ReturnsAsync(appointments);
@@ -53,25 +53,22 @@ namespace AppointmentBookingSystem.Test
             // Arrange
             var customerId = 1;
             var date = new DateTime(2024, 6, 20);
-            var customer = new Customer { Id = customerId, Name = "John Doe", Email = "john@example.com" };
             var agency = new Agency { Id = 1, Name = "Test Agency", MaxAppointmentsPerDay = 5, OffDays = new List<DateTime>() };
-            var appointment = new Appointment { Id = 1, CustomerId = customerId, Customer = customer, Date = date};
+            var appointment = new Appointment { Id = 1, Name = "John Doe", Email = "john@example.com", Date = date};
 
-            _mockCustomerRepository.Setup(r => r.GetCustomerById(customerId))
-                .ReturnsAsync(customer);
             _mockAgencyRepository.Setup(r => r.GetAgencyById(1))
                 .ReturnsAsync(agency);
             _mockAppointmentRepository.Setup(r => r.GetAppointmentsForDate(date))
                 .ReturnsAsync(new List<Appointment>());
             _mockAppointmentRepository.Setup(r => r.CreateAppointment(It.IsAny<Appointment>()))
-                .ReturnsAsync(appointment);
+                .ReturnsAsync((Appointment a) => a);
 
             // Act
-            var result = await _appointmentService.BookAppointment(customerId, date);
+            var result = await _appointmentService.BookAppointment(appointment.Name, appointment.Email, date);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result.CustomerId, Is.EqualTo(customerId));
+            Assert.That(result.Name, Is.EqualTo(appointment.Name));
             Assert.That(result.Date, Is.EqualTo(date));
         }
 
@@ -81,24 +78,21 @@ namespace AppointmentBookingSystem.Test
             // Arrange
             var customerId = 1;
             var date = new DateTime(2024, 6, 20);
-            var customer = new Customer { Id = customerId, Name = "John Doe", Email = "john@example.com" };
             var agency = new Agency { Id = 1, Name = "Test Agency", MaxAppointmentsPerDay = 5, OffDays = new List<DateTime>() };
             agency.OffDays.Add(date);
 
-            var appointment = new Appointment { Id = 1, CustomerId = customerId, Customer = customer, Date = date };
+            var appointment = new Appointment { Id = 1, Name = "John Doe", Email = "john@example.com", Date = date };
 
-            _mockCustomerRepository.Setup(r => r.GetCustomerById(customerId))
-                .ReturnsAsync(customer);
             _mockAgencyRepository.Setup(r => r.GetAgencyById(1))
                 .ReturnsAsync(agency);
             _mockAppointmentRepository.Setup(r => r.GetAppointmentsForDate(date))
                 .ReturnsAsync(new List<Appointment>());
             _mockAppointmentRepository.Setup(r => r.CreateAppointment(It.IsAny<Appointment>()))
-                .ReturnsAsync(appointment);
+                .ReturnsAsync((Appointment a) => a);
 
             // Act
             var exception = Assert.ThrowsAsync<Exception>(async () =>
-                await _appointmentService.BookAppointment(customerId, date));
+                await _appointmentService.BookAppointment(appointment.Name, appointment.Email, date));
 
             // Assert
             Assert.That(exception.Message, Is.EqualTo("Agency is closed on the selected date."));
@@ -111,13 +105,10 @@ namespace AppointmentBookingSystem.Test
             var customerId = 1;
             var date = new DateTime(2024, 6, 21);
             var expectedDate = new DateTime(2024, 6, 24);
-            var customer = new Customer { Id = customerId, Name = "John Doe", Email = "john@example.com" };
             var agency = new Agency { Id = 1, Name = "Test Agency", MaxAppointmentsPerDay = 1, OffDays = new List<DateTime>() };
 
-            var appointment = new Appointment { Id = 2, CustomerId = customerId, Customer = customer, Date = date };
+            var appointment = new Appointment { Id = 1, Name = "John Doe", Email = "john@example.com", Date = date };
 
-            _mockCustomerRepository.Setup(r => r.GetCustomerById(customerId))
-                .ReturnsAsync(customer);
             _mockAgencyRepository.Setup(r => r.GetAgencyById(1))
                 .ReturnsAsync(agency);
             _mockAppointmentRepository.Setup(r => r.CountAppointmentsForDate(date))
@@ -126,11 +117,11 @@ namespace AppointmentBookingSystem.Test
                 .ReturnsAsync((Appointment a) => a);
 
             // Act
-            var result = await _appointmentService.BookAppointment(customerId, date);
+            var result = await _appointmentService.BookAppointment(appointment.Name, appointment.Email, date);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.That(result.CustomerId, Is.EqualTo(customerId));
+            Assert.That(result.Name, Is.EqualTo(appointment.Name));
             Assert.That(result.Date, Is.EqualTo(expectedDate));
         }
     }

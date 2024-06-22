@@ -35,7 +35,8 @@ namespace AppointmentBookingSystem.API.Controllers
         /// <summary>
         /// Book a new appointment
         /// </summary>
-        /// <param name="customerId">The ID of the customer</param>
+        /// <param name="name">The customer name</param>
+        /// <param name="email">The customer email</param>
         /// <param name="date">The requested appointment date</param>
         /// <returns>The newly created appointment</returns>
         /// <response code="200">Returns the newly created appointment</response>
@@ -43,11 +44,11 @@ namespace AppointmentBookingSystem.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> BookAppointment(int customerId, DateTime date)
+        public async Task<IActionResult> BookAppointment(string name, string email, DateTime date)
         {
             try
             {
-                var appointment = await _appointmentService.BookAppointment(customerId, date);
+                var appointment = await _appointmentService.BookAppointment(name, email, date);
                 return Ok(appointment);
             }
             catch (Exception ex)
@@ -55,5 +56,6 @@ namespace AppointmentBookingSystem.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }
